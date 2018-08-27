@@ -17,6 +17,8 @@
 		C074D98A2133711A0038196F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C074D9892133711A0038196F /* ViewController.swift */; };
 		C074D98F213374640038196F /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C074D98E213374640038196F /* Podcast.swift */; };
 		C074D991213374D90038196F /* PodcastsSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C074D990213374D90038196F /* PodcastsSearchController.swift */; };
+		C074D99321338CA30038196F /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C074D99221338CA30038196F /* SearchResults.swift */; };
+		C074D99521338EC40038196F /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C074D99421338EC40038196F /* APIService.swift */; };
 		CCA1E70A1C00154936D9DB4C /* Pods_MyPodcast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48198778E9161F107ADCC0E8 /* Pods_MyPodcast.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +37,8 @@
 		C074D9892133711A0038196F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C074D98E213374640038196F /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
 		C074D990213374D90038196F /* PodcastsSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsSearchController.swift; sourceTree = "<group>"; };
+		C074D99221338CA30038196F /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
+		C074D99421338EC40038196F /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		FB077597388EBB2352A6B017 /* Pods-MyPodcast.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyPodcast.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyPodcast/Pods-MyPodcast.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				C074D96F21336DE90038196F /* AppDelegate.swift */,
+				C074D99421338EC40038196F /* APIService.swift */,
 				C074D98D213374510038196F /* Model */,
 				C074D98B2133742C0038196F /* Utilities */,
 				C074D98C2133743C0038196F /* ViewControllers */,
@@ -115,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				C074D98E213374640038196F /* Podcast.swift */,
+				C074D99221338CA30038196F /* SearchResults.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -242,9 +248,11 @@
 				C074D98F213374640038196F /* Podcast.swift in Sources */,
 				C074D97021336DE90038196F /* AppDelegate.swift in Sources */,
 				C074D98421336E4E0038196F /* UIVIew_Extension.swift in Sources */,
+				C074D99521338EC40038196F /* APIService.swift in Sources */,
 				C074D991213374D90038196F /* PodcastsSearchController.swift in Sources */,
 				C074D988213370300038196F /* MainTabBarController.swift in Sources */,
 				C074D98221336E350038196F /* BasicCollectionViewCell.swift in Sources */,
+				C074D99321338CA30038196F /* SearchResults.swift in Sources */,
 				C074D98621336E880038196F /* UIColor_Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

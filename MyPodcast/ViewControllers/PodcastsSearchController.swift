@@ -12,10 +12,7 @@ class PodcastsSearchController: UITableViewController {
     
     let cellId = "cellId"
     let searchController = UISearchController(searchResultsController: nil)
-    var podcasts = [
-        Podcast.init(trackName: "Belize Military Service", artistName: "Hsin"),
-        Podcast.init(trackName: "Some Podcast", artistName: "Some one")
-    ]
+    var podcasts = [Podcast]()
     
     
    
@@ -58,40 +55,16 @@ extension PodcastsSearchController{
         cell.imageView?.image = UIImage(named: "appicon")
         return cell
     }
-    
 }
-
-
-
-
-
 
 
 
 
 extension PodcastsSearchController: UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        Alamofire.request("https://itunes.apple.com/search", method: .get, parameters: ["term": searchText, "media": "podcast"], encoding: URLEncoding.default, headers: nil).responseData { (dataResponse) in
-            
-            if let err = dataResponse.error {
-                print("Failed to get response:", err)
-            }
-            
-            guard let data = dataResponse.data else { return }
-            //            let decodedString = String(data: data, encoding: .utf8)
-            //            print(decodedString ?? "")
-            
-            // let's parse some JSON
-            do {
-                let searchResults = try JSONDecoder().decode(SearchResults.self, from: data)
-                searchResults.results.forEach({ (podcast) in
-                    print(podcast.artistName, podcast.trackName)
-                })
-                self.podcasts = searchResults.results
-                self.tableView.reloadData()
-            } catch let decodeErr {
-                print("Failed to decode results:", decodeErr)
-            }
+        APIService.shared.fetchPodcasts(searchText: searchText) { (podcasts) in
+            self.podcasts = podcasts
+            self.tableView.reloadData()
         }
         
     }

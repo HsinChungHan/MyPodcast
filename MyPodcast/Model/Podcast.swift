@@ -20,6 +20,3 @@ struct Podcast: Decodable {
     }
 }
 
-struct SearchResults: Decodable {
-    let results: [Podcast]
-}
