@@ -11,8 +11,14 @@ import Foundation
 
 
 struct Podcast: Decodable {
-    let trackName: String
-    let artistName: String
+    var trackName: String?
+    var artistName: String?
+    var artworkUrl600: String?
+    var trackCount: Int?
+    var feedUrl: String?
+    
+    
+    
     
     init(trackName: String, artistName: String) {
         self.trackName = trackName
