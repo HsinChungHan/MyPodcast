@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+import FeedKit
 class APIService {
     fileprivate let basicITunesSearchURL = "https://itunes.apple.com/search"
     
@@ -34,6 +35,32 @@ class APIService {
                 print("Failed to decode results:", decodeErr)
             }
         }
+    }
+    
+    public func fetchEpisodes(podcast: Podcast, completion: @escaping ([Episode]) -> ()){
+        guard let feedUrl = podcast.feedUrl else {return}
+        
+        //將網址強迫轉為https
+        let secureFeedUrl = feedUrl.contains("https") ? feedUrl : feedUrl.replacingOccurrences(of: "http", with: "https")
+        
+        guard let url = URL(string: secureFeedUrl) else {return}
+        let parser = FeedParser(URL: url)
+        parser?.parseAsync(result: { (result) in
+            switch result{
+            case let .rss(feed):
+                var episodes = [Episode]()
+                feed.items?.forEach({ (item) in
+                    let episode = Episode(title: item.title ?? "")
+                    episodes.append(episode)
+                })
+                completion(episodes)
+                break
+            case let .failure(error):
+                print("Parse failed: ", error)
+            default:
+                print("Found a feed...")
+            }
+        })
     }
     
 }

@@ -12,16 +12,19 @@ class EpisodesController: UITableViewController {
 
     fileprivate var podcast: Podcast?{
         didSet{
-            navigationItem.title = podcast?.trackName
+            guard let podcast = podcast else {return}
+            navigationItem.title = podcast.trackName
+            APIService.shared.fetchEpisodes(podcast: podcast) { (episodes) in
+                self.episodes = episodes
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
         }
     }
     
     fileprivate let cellId = "cellId"
-    fileprivate var episodes = [
-        Episode.init(title: "First"),
-        Episode.init(title: "Second"),
-        Episode.init(title: "Third")
-    ]
+    fileprivate var episodes = [Episode]()
     
     
     

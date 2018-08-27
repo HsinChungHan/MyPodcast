@@ -93,7 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				C074D96F21336DE90038196F /* AppDelegate.swift */,
-				C074D99421338EC40038196F /* APIService.swift */,
+				C0C607DB2134A508005C63D7 /* API */,
 				C074D98D213374510038196F /* Model */,
 				C074D987213370300038196F /* MainTabBarController.swift */,
 				C074D9892133711A0038196F /* ViewController.swift */,
@@ -151,6 +151,14 @@
 				C074D99A213393990038196F /* PodcastCell.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		C0C607DB2134A508005C63D7 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				C074D99421338EC40038196F /* APIService.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 		EE7AEAE1EC2D69D0F459177B /* Frameworks */ = {
@@ -238,11 +246,13 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-MyPodcast/Pods-MyPodcast-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/FeedKit/FeedKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FeedKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
