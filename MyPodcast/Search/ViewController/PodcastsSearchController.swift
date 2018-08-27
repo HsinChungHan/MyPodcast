@@ -10,9 +10,9 @@ import UIKit
 import Alamofire
 class PodcastsSearchController: UITableViewController {
     
-    let podcastCellId = "PodcastCellId"
-    let searchController = UISearchController(searchResultsController: nil)
-    var podcasts = [Podcast]()
+    fileprivate let podcastCellId = "PodcastCellId"
+    fileprivate let searchController = UISearchController(searchResultsController: nil)
+    fileprivate var podcasts = [Podcast]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,11 +26,12 @@ class PodcastsSearchController: UITableViewController {
 
 extension PodcastsSearchController{
     fileprivate func setupSearchBar(){
+        definesPresentationContext = false
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
-        
+        tableView.separatorStyle = .none
     }
     
     fileprivate func registerTableViewCell(){
@@ -50,6 +51,25 @@ extension PodcastsSearchController{
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 130
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let episodeVC = EpisodesController()
+        let podcast = podcasts[indexPath.item]
+        episodeVC.setValue(podcast: podcast)
+        navigationController?.pushViewController(episodeVC, animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = "Plz text a search term!"
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        return label
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return podcasts.count > 0 ? 0 : 250
     }
 }
 

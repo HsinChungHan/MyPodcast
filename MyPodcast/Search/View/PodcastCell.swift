@@ -14,7 +14,7 @@ class PodcastCell: UITableViewCell {
     @IBOutlet weak var artistNameLabel: UILabel!
     @IBOutlet weak var episodeCountLabel: UILabel!
     
-    var podcast: Podcast? {
+    fileprivate var podcast: Podcast? {
         didSet{
             guard let podcast = podcast else {return}
             trackNAmeLabel.text = podcast.trackName

@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 class APIService {
-    let basicITunesSearchURL = "https://itunes.apple.com/search"
+    fileprivate let basicITunesSearchURL = "https://itunes.apple.com/search"
     
     //use singleton
     static let shared = APIService()
