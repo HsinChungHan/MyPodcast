@@ -27,7 +27,7 @@ extension MainTabBarController{
     fileprivate func setupViewControllers(){
         viewControllers = [
             generateNavigationController(for: ViewController(), title: "Favorite", image: UIImage(named: "play")),
-            generateNavigationController(for: ViewController(), title: "Search", image: UIImage(named: "search")),
+            generateNavigationController(for: PodcastsSearchController(), title: "Search", image: UIImage(named: "search")),
             generateNavigationController(for: ViewController(), title: "Download", image: UIImage(named: "downloads"))
         ]
     }
