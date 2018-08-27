@@ -10,13 +10,9 @@ import UIKit
 import Alamofire
 class PodcastsSearchController: UITableViewController {
     
-    let cellId = "cellId"
+    let podcastCellId = "PodcastCellId"
     let searchController = UISearchController(searchResultsController: nil)
     var podcasts = [Podcast]()
-    
-    
-   
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +34,8 @@ extension PodcastsSearchController{
     }
     
     fileprivate func registerTableViewCell(){
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        let nib = UINib(nibName: "PodcastCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: podcastCellId)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -46,14 +43,13 @@ extension PodcastsSearchController{
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        
-        let podcast = podcasts[indexPath.row]
-        cell.textLabel?.text = "\(podcast.trackName)\n\(podcast.artistName)"
-        //makes textLabel be multiline
-        cell.textLabel?.numberOfLines = -1
-        cell.imageView?.image = UIImage(named: "appicon")
+        let cell = tableView.dequeueReusableCell(withIdentifier: podcastCellId, for: indexPath) as! PodcastCell
+        cell.setValue(podcast: podcasts[indexPath.row])
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 130
     }
 }
 
