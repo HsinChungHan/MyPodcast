@@ -31,7 +31,7 @@ extension PodcastsSearchController{
         navigationItem.hidesSearchBarWhenScrolling = false
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
-        tableView.separatorStyle = .none
+        tableView.tableFooterView = UIView()
     }
     
     fileprivate func registerTableViewCell(){

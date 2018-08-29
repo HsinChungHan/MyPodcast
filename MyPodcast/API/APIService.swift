@@ -50,7 +50,7 @@ class APIService {
             case let .rss(feed):
                 var episodes = [Episode]()
                 feed.items?.forEach({ (item) in
-                    let episode = Episode(title: item.title ?? "")
+                    let episode = Episode.init(feedItem: item)
                     episodes.append(episode)
                 })
                 completion(episodes)

@@ -9,54 +9,60 @@
 import UIKit
 
 class EpisodesController: UITableViewController {
-
+    fileprivate let episodeCellName = "EpisodeCell"
     fileprivate var podcast: Podcast?{
         didSet{
             guard let podcast = podcast else {return}
             navigationItem.title = podcast.trackName
-            APIService.shared.fetchEpisodes(podcast: podcast) { (episodes) in
-                self.episodes = episodes
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
+            fetchEpisode(podcast)
         }
     }
     
-    fileprivate let cellId = "cellId"
+    fileprivate let episodeCellId = "EpisodeCellId"
     fileprivate var episodes = [Episode]()
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
     }
-
-    
-
 }
 
 extension EpisodesController{
-    fileprivate func setupTableView(){
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-    }
-    
     public func setValue(podcast: Podcast){
         self.podcast = podcast
     }
     
     
+    fileprivate func setupTableView(){
+        let nib = UINib(nibName: episodeCellName, bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: episodeCellId)
+        //消除多餘的部分
+        tableView.tableFooterView = UIView()
+    }
+    
+    fileprivate func fetchEpisode(_ podcast: Podcast) {
+        APIService.shared.fetchEpisodes(podcast: podcast) { (episodes) in
+            self.episodes = episodes
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return episodes.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: episodeCellId, for: indexPath) as! EpisodeCell
         let episode = episodes[indexPath.row]
-        cell.textLabel?.text = episode.title
+        cell.setupValue(episode: episode)
         return cell
+       
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 134
     }
 }

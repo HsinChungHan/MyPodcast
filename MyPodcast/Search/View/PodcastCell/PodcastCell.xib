@@ -60,7 +60,7 @@
                 <outlet property="artistNameLabel" destination="z95-7x-KVQ" id="ozD-Px-vDi"/>
                 <outlet property="episodeCountLabel" destination="zgS-cq-zhU" id="Lc3-lw-7TR"/>
                 <outlet property="podcastImgView" destination="hkj-kb-EBK" id="Osu-x1-AuE"/>
-                <outlet property="trackNAmeLabel" destination="xat-Xz-4U9" id="NRT-4e-Hhx"/>
+                <outlet property="trackNameLabel" destination="xat-Xz-4U9" id="NRT-4e-Hhx"/>
             </connections>
             <point key="canvasLocation" x="82" y="-533.5"/>
         </tableViewCell>

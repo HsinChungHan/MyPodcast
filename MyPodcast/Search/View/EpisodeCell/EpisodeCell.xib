@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14252.5"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="139" id="p0T-MQ-ZmL" customClass="EpisodeCell" customModule="MyPodcast" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="492" height="139"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="p0T-MQ-ZmL" id="d8b-IC-xjM">
+                <rect key="frame" x="0.0" y="0.0" width="492" height="138.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="appicon" translatesAutoresizingMaskIntoConstraints="NO" id="ucp-pi-q6R">
+                        <rect key="frame" x="20" y="19" width="100" height="100"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="100" id="Hdk-G3-g9q"/>
+                            <constraint firstAttribute="width" constant="100" id="vCM-Fo-Who"/>
+                        </constraints>
+                    </imageView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="7EJ-jR-x1W">
+                        <rect key="frame" x="132" y="28.5" width="340" height="81.5"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e5n-O4-a7Q">
+                                <rect key="frame" x="0.0" y="0.0" width="340" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="snM-fb-OrJ">
+                                <rect key="frame" x="0.0" y="30.5" width="340" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uQP-eH-udd">
+                                <rect key="frame" x="0.0" y="61" width="340" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="7EJ-jR-x1W" firstAttribute="centerY" secondItem="d8b-IC-xjM" secondAttribute="centerY" id="Cq1-rU-lM0"/>
+                    <constraint firstItem="7EJ-jR-x1W" firstAttribute="leading" secondItem="ucp-pi-q6R" secondAttribute="trailing" constant="12" id="bn3-c2-8dh"/>
+                    <constraint firstItem="ucp-pi-q6R" firstAttribute="top" secondItem="d8b-IC-xjM" secondAttribute="topMargin" constant="8" id="eT8-lU-QqG"/>
+                    <constraint firstItem="ucp-pi-q6R" firstAttribute="leading" secondItem="d8b-IC-xjM" secondAttribute="leadingMargin" id="inS-Of-zFs"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="7EJ-jR-x1W" secondAttribute="trailing" id="vRA-Qv-AfD"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="descriptionLabel" destination="uQP-eH-udd" id="XP5-A6-6wu"/>
+                <outlet property="pubDateLabel" destination="e5n-O4-a7Q" id="gzu-7v-eV6"/>
+                <outlet property="titleLabel" destination="snM-fb-OrJ" id="baM-XC-e4b"/>
+            </connections>
+            <point key="canvasLocation" x="82" y="-533.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="appicon" width="60" height="60"/>
+    </resources>
+</document>
