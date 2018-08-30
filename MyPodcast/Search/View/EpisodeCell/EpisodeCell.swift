@@ -7,14 +7,24 @@
 //
 
 import UIKit
-
+import SDWebImage
 class EpisodeCell: UITableViewCell {
     
+    
+    @IBOutlet weak var episodeImgView: UIImageView!
     @IBOutlet weak var pubDateLabel: UILabel!
     
-    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!{
+        didSet{
+            titleLabel.numberOfLines = 2
+        }
+    }
     
-    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!{
+        didSet{
+            descriptionLabel.numberOfLines = 2
+        }
+    }
     
     fileprivate var episode: Episode?{
         didSet{
@@ -22,7 +32,8 @@ class EpisodeCell: UITableViewCell {
             titleLabel.text = episode.title
             descriptionLabel.text = episode.description
             pubDateLabel.text = parseDate(episode: episode)
-            print(episode.title)
+            let imgUrl = URL(string: episode.imageUrl?.toSecureHttps() ?? "")
+            episodeImgView.sd_setImage(with: imgUrl)
         }
     }
     

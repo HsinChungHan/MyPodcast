@@ -39,6 +39,10 @@ extension UIView{
         anchor(top: superView.topAnchor, bottom: superView.bottomAnchor, left: superView.leftAnchor, right: superView.rightAnchor, topPadding: 0, bottomPadding: 0, leftPadding: 0, rightPadding: 0, width: 0, height: 0)
     }
     
+    func fullAnchor(superView: UIView, topPadding: CGFloat, bottomPadding: CGFloat, leftPadding: CGFloat, rightPadding: CGFloat) {
+        anchor(top: superView.topAnchor, bottom: superView.bottomAnchor, left: superView.leftAnchor, right: superView.rightAnchor, topPadding: topPadding, bottomPadding: bottomPadding, leftPadding: leftPadding, rightPadding: rightPadding, width: 0, height: 0)
+    }
+    
     func centerAnchor(superView: UIView, width: CGFloat, height: CGFloat) {
         anchor(top: nil, bottom: nil, left: nil, right: nil, topPadding: 0, bottomPadding: 0, leftPadding: 0, rightPadding: 0, width: width, height: height)
         centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
@@ -46,11 +50,20 @@ extension UIView{
     }
     
     
-    func minimizeAnimation(scaleX: CGFloat, scaleY: CGFloat) {
+    func scaleAnimationRepeated(scaleX: CGFloat, scaleY: CGFloat) {
         let minimizeTransform = CGAffineTransform(scaleX: scaleX, y: scaleY)
         transform = minimizeTransform
         UIView.animate(withDuration: 1.0, delay: 0.0, options: [.repeat, .autoreverse], animations: { [weak self] in
             self?.transform = CGAffineTransform.identity
+        }) { (_) in
+        }
+    }
+    
+    func scaleAnimationNoRepeated(scaleX: CGFloat, scaleY: CGFloat) {
+        let scaleTransform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+        
+        UIView.animate(withDuration: 1.0, delay: 0.0, options: .curveEaseOut, animations: { [weak self] in
+            self?.transform = scaleTransform
         }) { (_) in
         }
     }
@@ -71,10 +84,51 @@ extension UIView{
         let moveTransform = CGAffineTransform(translationX: dx!, y: 0)
         UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.8, options: .curveEaseInOut, animations: {[weak self] in
             self?.transform = moveTransform
+            
         }) { (_) in
             completion()
         }
     }
+    
+    func moveAnimation(dy: CGFloat?, completion: @escaping ()->()) {
+        let moveTransform = CGAffineTransform(translationX: 0, y: dy!)
+        UIView.animate(withDuration: 3.0, delay: 1.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.8, options: [.repeat, .curveEaseInOut], animations: {[weak self] in
+            self?.transform = moveTransform
+            
+        }) { (_) in
+            completion()
+        }
+    }
+    
+    
+    
+    func moveAnimation(endView: UIView, duration: Double, completion: @escaping ()->()) {
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.8, options: .curveEaseInOut, animations: {[weak self] in
+            let endPoint = CGPoint(x: endView.frame.origin.x - 40 , y: endView.frame.origin.y)
+            self?.frame.origin = endPoint
+        }) { (_) in
+            completion()
+        }
+    }
+    
+    func moveCenterAnimation(endView: UIView, duration: Double, completion: @escaping ()->()) {
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.8, options: .curveEaseInOut, animations: {[weak self] in
+            let endPoint = CGPoint(x: endView.center.x , y: endView.center.y)
+            self?.frame.origin = endPoint
+        }) { (_) in
+            completion()
+        }
+    }
+    
+    func movAnimation(endView: UIView, duration: Double, offsetX: CGFloat, offSetY: CGFloat, completion: @escaping ()->()) {
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.8, options: .curveEaseInOut, animations: {[weak self] in
+            let endPoint = CGPoint(x: endView.frame.origin.x + offsetX , y: endView.frame.origin.y + offSetY)
+            self?.frame.origin = endPoint
+        }) { (_) in
+            completion()
+        }
+    }
+    
     
     func addConstraintsWithFormat(format: String, views: UIView...)  {
         var viewsDictionary = [String : UIView]()
@@ -99,7 +153,7 @@ extension UIView{
         layer.shadowColor = shadowColor.cgColor
         layer.shadowOpacity = shadowOpacity
         layer.shadowOffset = CGSize(width: width, height: height)
-        layer.shadowRadius = 1
+        //        layer.shadowRadius = 1
         layer.masksToBounds = false
     }
     
@@ -113,4 +167,11 @@ extension UIView{
         )
     }
     
+}
+
+
+extension UIView: CAAnimationDelegate{
+    public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        
+    }
 }

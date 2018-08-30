@@ -41,7 +41,7 @@ class APIService {
         guard let feedUrl = podcast.feedUrl else {return}
         
         //將網址強迫轉為https
-        let secureFeedUrl = feedUrl.contains("https") ? feedUrl : feedUrl.replacingOccurrences(of: "http", with: "https")
+        let secureFeedUrl = feedUrl.toSecureHttps()
         
         guard let url = URL(string: secureFeedUrl) else {return}
         let parser = FeedParser(URL: url)

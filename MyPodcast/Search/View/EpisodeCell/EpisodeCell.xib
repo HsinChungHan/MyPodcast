@@ -58,6 +58,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="descriptionLabel" destination="uQP-eH-udd" id="XP5-A6-6wu"/>
+                <outlet property="episodeImgView" destination="ucp-pi-q6R" id="KkP-ST-Tx8"/>
                 <outlet property="pubDateLabel" destination="e5n-O4-a7Q" id="gzu-7v-eV6"/>
                 <outlet property="titleLabel" destination="snM-fb-OrJ" id="baM-XC-e4b"/>
             </connections>

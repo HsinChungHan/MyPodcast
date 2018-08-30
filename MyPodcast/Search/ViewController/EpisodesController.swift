@@ -49,6 +49,8 @@ extension EpisodesController{
         }
     }
     
+    
+    
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return episodes.count
@@ -61,6 +63,21 @@ extension EpisodesController{
         return cell
        
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let episode = episodes[indexPath.row]
+        let window = UIApplication.shared.keyWindow
+        let playerDetailView = PlayerDetailView()
+        playerDetailView.setupValue(episode: episode)
+        playerDetailView.setupBackgroundColor(color: UIColor.white)
+        playerDetailView.frame = view.frame
+        window?.addSubview(playerDetailView)
+        
+        
+        //若是用nib的方式程式碼如下。.first代表xib中的第一個階層的view
+//        let playerDetailsView = Bundle.main.loadNibNamed("PlayerDetailsView", owner: self, options: nil)?.first as! PlayerDetailsView
+    }
+    
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 134
