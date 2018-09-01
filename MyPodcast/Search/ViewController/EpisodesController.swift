@@ -10,10 +10,11 @@ import UIKit
 
 class EpisodesController: UITableViewController {
     fileprivate let episodeCellName = "EpisodeCell"
-    fileprivate var podcast: Podcast?{
+    var podcast: Podcast?{
         didSet{
             guard let podcast = podcast else {return}
             navigationItem.title = podcast.trackName
+            print("podcast.trackName: ", podcast.trackName)
             fetchEpisode(podcast)
         }
     }
@@ -81,5 +82,15 @@ extension EpisodesController{
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 134
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let loadingFooterView = LoadingFooterView()
+        loadingFooterView.startAnimating()
+        return loadingFooterView
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return episodes.isEmpty ? 200 : 0
     }
 }

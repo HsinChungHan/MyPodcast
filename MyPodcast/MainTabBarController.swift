@@ -26,17 +26,18 @@ class MainTabBarController: UITabBarController {
 extension MainTabBarController{
     fileprivate func setupViewControllers(){
         viewControllers = [
-            generateNavigationController(for: ViewController(), title: "Favorite", image: UIImage(named: "play")),
-            generateNavigationController(for: PodcastsSearchController(), title: "Search", image: UIImage(named: "search")),
-            generateNavigationController(for: ViewController(), title: "Download", image: UIImage(named: "downloads"))
+            generateNavigationController(for: PodcastsSearchController(), title: "Search", image: UIImage(named: "search")!),
+            generateNavigationController(for: ViewController(), title: "Favorite", image: UIImage(named: "play")!),
+            generateNavigationController(for: ViewController(), title: "Download", image: UIImage(named: "downloads")!)
         ]
     }
     
-    fileprivate func generateNavigationController(for rootVC: UIViewController, title: String, image: UIImage?) -> UIViewController{
-        let naviVC = UINavigationController(rootViewController: rootVC)
-        rootVC.navigationItem.title = title
-        naviVC.tabBarItem.title = title
-        naviVC.tabBarItem.image = image
-        return naviVC
+    fileprivate func generateNavigationController(for rootViewController: UIViewController, title: String, image: UIImage) -> UIViewController {
+        let navController = UINavigationController(rootViewController: rootViewController)
+        //        navController.navigationBar.prefersLargeTitles = true
+        rootViewController.navigationItem.title = title
+        navController.tabBarItem.title = title
+        navController.tabBarItem.image = image
+        return navController
     }
 }

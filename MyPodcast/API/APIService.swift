@@ -44,23 +44,28 @@ class APIService {
         let secureFeedUrl = feedUrl.toSecureHttps()
         
         guard let url = URL(string: secureFeedUrl) else {return}
-        let parser = FeedParser(URL: url)
-        parser?.parseAsync(result: { (result) in
-            switch result{
-            case let .rss(feed):
-                var episodes = [Episode]()
-                feed.items?.forEach({ (item) in
-                    let episode = Episode.init(feedItem: item)
-                    episodes.append(episode)
-                })
-                completion(episodes)
-                break
-            case let .failure(error):
-                print("Parse failed: ", error)
-            default:
-                print("Found a feed...")
-            }
-        })
+        
+        //這邊會parse url，所以要放在background queue做
+        DispatchQueue.global(qos: .background).async {
+            let parser = FeedParser(URL: url)
+            
+            parser?.parseAsync(result: { (result) in
+                switch result{
+                case let .rss(feed):
+                    var episodes = [Episode]()
+                    feed.items?.forEach({ (item) in
+                        let episode = Episode.init(feedItem: item)
+                        episodes.append(episode)
+                    })
+                    completion(episodes)
+                    break
+                case let .failure(error):
+                    print("Parse failed: ", error)
+                default:
+                    print("Found a feed...")
+                }
+            })
+        }
     }
     
 }

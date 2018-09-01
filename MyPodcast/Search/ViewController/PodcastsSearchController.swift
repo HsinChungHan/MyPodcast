@@ -14,6 +14,8 @@ class PodcastsSearchController: UITableViewController {
     fileprivate let searchController = UISearchController(searchResultsController: nil)
     fileprivate var podcasts = [Podcast]()
     
+    fileprivate var timer: Timer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSearchBar()
@@ -26,15 +28,15 @@ class PodcastsSearchController: UITableViewController {
 
 extension PodcastsSearchController{
     fileprivate func setupSearchBar(){
-        definesPresentationContext = false
+        definesPresentationContext = true//這行設定才會出現navigationBar
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
-        tableView.tableFooterView = UIView()
     }
     
     fileprivate func registerTableViewCell(){
+        tableView.tableFooterView = UIView()
         let nib = UINib(nibName: "PodcastCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: podcastCellId)
     }
@@ -57,6 +59,7 @@ extension PodcastsSearchController{
         let episodeVC = EpisodesController()
         let podcast = podcasts[indexPath.item]
         episodeVC.setValue(podcast: podcast)
+//        navigationController?.present(episodeVC, animated: true, completion: nil)
         navigationController?.pushViewController(episodeVC, animated: true)
     }
     
@@ -69,7 +72,17 @@ extension PodcastsSearchController{
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return podcasts.count > 0 ? 0 : 250
+        return podcasts.isEmpty && searchController.searchBar.text?.isEmpty == true ? 250 : 0
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let searchingView = SearchingView()
+        searchingView.startAnimating()
+        return searchingView
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return podcasts.isEmpty && searchController.searchBar.text?.isEmpty == false ? 250 : 0
     }
 }
 
@@ -78,10 +91,20 @@ extension PodcastsSearchController{
 
 extension PodcastsSearchController: UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        APIService.shared.fetchPodcasts(searchText: searchText) { (podcasts) in
-            self.podcasts = podcasts
-            self.tableView.reloadData()
-        }
+        //使用者每打一個字，都先把之前在podcasts的元素清掉(為了讓searching時的提示view可以出現)
+        podcasts = []
+        tableView.reloadData()
+        
+        //use small delay to fire off search Api for saving user's internet
+        //use timer
+        timer?.invalidate()//每處發一次就砍掉一次timer
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (timer) in
+            //每隔0.5秒處發一次api，讓使用者不會每輸入一個字就觸發一次api
+            APIService.shared.fetchPodcasts(searchText: searchText) { (podcasts) in
+                self.podcasts = podcasts
+                self.tableView.reloadData()
+            }
+        })
         
     }
 }
