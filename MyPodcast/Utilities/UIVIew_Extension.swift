@@ -36,14 +36,17 @@ extension UIView{
     }
     
     func fullAnchor(superView: UIView) {
+        translatesAutoresizingMaskIntoConstraints = false
         anchor(top: superView.topAnchor, bottom: superView.bottomAnchor, left: superView.leftAnchor, right: superView.rightAnchor, topPadding: 0, bottomPadding: 0, leftPadding: 0, rightPadding: 0, width: 0, height: 0)
     }
     
     func fullAnchor(superView: UIView, topPadding: CGFloat, bottomPadding: CGFloat, leftPadding: CGFloat, rightPadding: CGFloat) {
+        translatesAutoresizingMaskIntoConstraints = false
         anchor(top: superView.topAnchor, bottom: superView.bottomAnchor, left: superView.leftAnchor, right: superView.rightAnchor, topPadding: topPadding, bottomPadding: bottomPadding, leftPadding: leftPadding, rightPadding: rightPadding, width: 0, height: 0)
     }
     
     func centerAnchor(superView: UIView, width: CGFloat, height: CGFloat) {
+        translatesAutoresizingMaskIntoConstraints = false
         anchor(top: nil, bottom: nil, left: nil, right: nil, topPadding: 0, bottomPadding: 0, leftPadding: 0, rightPadding: 0, width: width, height: height)
         centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
         centerYAnchor.constraint(equalTo: superView.centerYAnchor).isActive = true

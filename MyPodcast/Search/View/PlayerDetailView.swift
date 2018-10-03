@@ -22,7 +22,7 @@ class PlayerDetailView: BasicView {
             guard let url = URL(string: imgUrl ?? "") else {return}
             episodeImgView.sd_setImage(with: url, completed: nil)
             
-            
+            minimizedPlayerDetailView.setValues(episod: episode)
         }
     }
     
@@ -33,6 +33,8 @@ class PlayerDetailView: BasicView {
         return avPlayer
     }()
     
+    
+    let maximizedPlayerDetailView = UIView()
     
     
     lazy var dismissButton: UIButton = {
@@ -46,7 +48,9 @@ class PlayerDetailView: BasicView {
     }()
     
     @objc func handleDismiss(){
-        removeFromSuperview()
+//        removeFromSuperview()
+        let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+        mainTabBarController?.minimizePlayerDetailView()
     }
     
     
@@ -72,7 +76,7 @@ class PlayerDetailView: BasicView {
     @objc func handleCurrentTimeSliderChanged(sender: UISlider){
         let percentage = sender.value
         guard let duration = player.currentItem?.duration else {return}
-        let durationInSeconds = duration.getSeconds()
+        let durationInSeconds = duration.seconds
         let seekTimeInSeconds = Double(percentage) * durationInSeconds
         let seekTime = CMTime(seconds: seekTimeInSeconds, preferredTimescale: 1)
         player.seek(to: seekTime)
@@ -146,10 +150,12 @@ class PlayerDetailView: BasicView {
         if player.timeControlStatus == .paused{
             player.play()
             playPauseButton.setImage(UIImage(named: "pause")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            minimizedPlayerDetailView.playPauseButton.setImage(UIImage(named: "pause")?.withRenderingMode(.alwaysOriginal), for: .normal)
             enlargeEpisodeImgView()
         }else{
             player.pause()
             playPauseButton.setImage(UIImage(named: "play")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            minimizedPlayerDetailView.playPauseButton.setImage(UIImage(named: "play")?.withRenderingMode(.alwaysOriginal), for: .normal)
             shrinkEpisodeImgView()
         }
     }
@@ -199,16 +205,30 @@ class PlayerDetailView: BasicView {
         return imv
     }()
     
+    
+    lazy var minimizedPlayerDetailView: MinimizedPlayerDetailView = {
+       let mpdv = MinimizedPlayerDetailView()
+        mpdv.delegate = self
+        return mpdv
+    }()
+    
+    
     override func setupView() {        
         setupUI()
         detectPlayerStarted()
         observePlayerCurrentTime()
+        setupMaximizedTapRecognizer()
     }
 
     deinit {
         //當PlayerDetailView的記憶體被釋放時，會觸發deinit function
         print("PlayerDetailView memory being reclained!")
     }
+    
+    //若是用nib做畫面的話，可以用這樣static function載入nib
+//    static func initFromNib() -> PlayerDetailView{
+//        return Bundle.main.loadNibNamed("PlayerDetailView", owner: self, options: nil)?.first as! PlayerDetailView
+//    }
 }
 
 
@@ -221,7 +241,26 @@ extension PlayerDetailView{
         backgroundColor = color
     }
     
+    fileprivate func setupMaximizedTapRecognizer(){
+        let tapGestureRecogmizer = UITapGestureRecognizer(target: self, action: #selector(handleMaximizedTap))
+        addGestureRecognizer(tapGestureRecogmizer)
+    }
+    
+    @objc func handleMaximizedTap(){
+        let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+        mainTabBarController?.maximizePlayerDetailView(episode: nil)
+    }
+    
+    
     fileprivate func setupUI(){
+        setupMaximizedPlayerView()
+        setupMinimizedPlayerView()
+    }
+    
+    fileprivate func setupMaximizedPlayerView(){
+        addSubview(maximizedPlayerDetailView)
+        maximizedPlayerDetailView.fullAnchor(superView: self)
+        
         let timeLabelStackView = UIStackView()
         timeLabelStackView.setupStackView(views: [currentTimeLabel, durationTimeLabel], axis: .horizontal, distribution: .fillEqually, spacing: 0)
         currentTimeLabel.heightAnchor.constraint(equalToConstant: 22).isActive = true
@@ -253,9 +292,19 @@ extension PlayerDetailView{
         timeSlider.heightAnchor.constraint(equalToConstant: 36).isActive = true
         titleLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         authorLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        addSubview(stackView)
-        stackView.fullAnchor(superView: self, topPadding: 0, bottomPadding: 30, leftPadding: 10, rightPadding: 10)
+        maximizedPlayerDetailView.addSubview(stackView)
+        stackView.fullAnchor(superView: maximizedPlayerDetailView, topPadding: 10, bottomPadding: 30, leftPadding: 10, rightPadding: 10)
     }
+    
+    
+    
+    fileprivate func setupMinimizedPlayerView(){
+        addSubview(minimizedPlayerDetailView)
+        
+        minimizedPlayerDetailView.anchor(top: topAnchor, bottom: nil
+            , left: leftAnchor, right: rightAnchor, topPadding: 0, bottomPadding: 0, leftPadding: 10, rightPadding: 0, width: 0, height: 48)
+    }
+    
     
     //MARK: - player
     fileprivate func playEpisode(episode: Episode){
@@ -287,8 +336,8 @@ extension PlayerDetailView{
     }
     
     fileprivate func seekToCurrentTime(delta: Int64){
-        let shiftSeconds = CMTime(value: delta, timescale: 1)
-        let seekTime = player.currentTime().add(shiftSeconds)
+        let fifteenSeconds = CMTimeMake(value: delta, timescale: 1)
+        let seekTime = CMTimeAdd(player.currentTime(), fifteenSeconds)
         player.seek(to: seekTime)
     }
     
@@ -306,7 +355,6 @@ extension PlayerDetailView{
     
     fileprivate func shrinkEpisodeImgView(){
         //讓圖像縮小，用於pause
-        
         UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {[weak self] in
             guard let shrunkenTransform = self?.shrunkenTransform else {return}
             self?.episodeImgView.transform = shrunkenTransform
@@ -315,11 +363,16 @@ extension PlayerDetailView{
     
     //MARK: - timeSlider
     fileprivate func updateCurrentTimeSlider(){
-        let currentTimeSeconds = player.currentTime().getSeconds()
-        let durationSeconds = (player.currentItem?.duration ?? CMTime(value: 1, timescale: 1)).getSeconds()
+        let currentTimeSeconds = player.currentTime().seconds
+        let durationSeconds = (player.currentItem?.duration ?? CMTime(value: 1, timescale: 1)).seconds
         let percentage = currentTimeSeconds / durationSeconds
         timeSlider.value = Float(percentage)
     }
     
+    
+}
+
+
+extension PlayerDetailView: MinimizedPlayerDetailViewDelegate{
     
 }

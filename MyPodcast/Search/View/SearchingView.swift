@@ -11,7 +11,7 @@ import UIKit
 class SearchingView: BasicView {
     let activityIndicatorView: UIActivityIndicatorView = {
         let indicatorView = UIActivityIndicatorView()
-        indicatorView.activityIndicatorViewStyle = .whiteLarge
+        indicatorView.style = .whiteLarge
         indicatorView.color = .darkGray
         return indicatorView
     }()
