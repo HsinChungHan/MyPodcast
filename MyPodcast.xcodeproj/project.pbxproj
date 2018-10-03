@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C02C665A216497FF00312BF2 /* MinimizedPlayerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02C6659216497FF00312BF2 /* MinimizedPlayerDetailView.swift */; };
 		C074D97021336DE90038196F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C074D96F21336DE90038196F /* AppDelegate.swift */; };
 		C074D97721336DEC0038196F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C074D97621336DEC0038196F /* Assets.xcassets */; };
 		C074D97A21336DEC0038196F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C074D97821336DEC0038196F /* LaunchScreen.storyboard */; };
@@ -40,6 +41,7 @@
 /* Begin PBXFileReference section */
 		023799290BDFFCA1A5B9A878 /* Pods-MyPodcast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyPodcast.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyPodcast/Pods-MyPodcast.release.xcconfig"; sourceTree = "<group>"; };
 		48198778E9161F107ADCC0E8 /* Pods_MyPodcast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyPodcast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C02C6659216497FF00312BF2 /* MinimizedPlayerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimizedPlayerDetailView.swift; sourceTree = "<group>"; };
 		C074D96C21336DE90038196F /* MyPodcast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPodcast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C074D96F21336DE90038196F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C074D97621336DEC0038196F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				C0C607DD2134A8F3005C63D7 /* PodcastCell */,
 				C08DC9082134B210000E8CDF /* EpisodeCell */,
 				C0C447FC21373F790035C975 /* PlayerDetailView.swift */,
+				C02C6659216497FF00312BF2 /* MinimizedPlayerDetailView.swift */,
 				C0C44806213A27B80035C975 /* LoadingFooterView.swift */,
 				C0C44808213A2B280035C975 /* SearchingView.swift */,
 			);
@@ -354,6 +357,7 @@
 				C074D98421336E4E0038196F /* UIVIew_Extension.swift in Sources */,
 				C0FEE8712136638A006F167E /* Extension_String.swift in Sources */,
 				C074D99521338EC40038196F /* APIService.swift in Sources */,
+				C02C665A216497FF00312BF2 /* MinimizedPlayerDetailView.swift in Sources */,
 				C074D991213374D90038196F /* PodcastsSearchController.swift in Sources */,
 				C074D988213370300038196F /* MainTabBarController.swift in Sources */,
 				C0C607DA21346EB0005C63D7 /* Episode.swift in Sources */,
@@ -505,6 +509,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = WAGW44Z6JC;
 				INFOPLIST_FILE = MyPodcast/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -524,6 +529,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = WAGW44Z6JC;
 				INFOPLIST_FILE = MyPodcast/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

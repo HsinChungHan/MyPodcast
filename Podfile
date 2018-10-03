@@ -6,7 +6,7 @@ target 'MyPodcast' do
   use_frameworks!
 
   # Pods for MyPodcast
-pod 'Alamofire', '~> 4.5'
+pod 'Alamofire', '~> 4.7'
   pod 'SDWebImage', '~> 4.0'
   pod 'FeedKit', '7.0.1'
 
