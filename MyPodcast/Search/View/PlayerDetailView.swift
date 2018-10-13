@@ -10,12 +10,31 @@ import UIKit
 import AVKit
 import SDWebImage
 import Foundation
+protocol HandlePanProtocol {
+    func whenPanChanged(gesture: UIPanGestureRecognizer)
+    func whenPanEnded(gesture: UIPanGestureRecognizer)
+}
+
+
+protocol  PlayerProtocol {
+    func playEpisode(episode: Episode)
+    func detectPlayerStarted()
+    func observePlayerCurrentTime()
+    func seekToCurrentTime(delta: Int64)
+}
+
 class PlayerDetailView: BasicView {
+    var handlePanDelegate: HandlePanProtocol?
+    var playerDelegate: PlayerProtocol?
+    
+    var panGestureRecognizer: UIPanGestureRecognizer?
+    
     fileprivate var episode: Episode?{
         didSet{
             guard let episode = episode else {return}
             titleLabel.text = episode.title
             authorLabel.text = episode.author
+            
             playEpisode(episode: episode)
             
             let imgUrl = episode.imageUrl?.toSecureHttps()
@@ -36,7 +55,6 @@ class PlayerDetailView: BasicView {
     
     let maximizedPlayerDetailView = UIView()
     
-    
     lazy var dismissButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitle("Dismiss", for: .normal)
@@ -51,6 +69,7 @@ class PlayerDetailView: BasicView {
 //        removeFromSuperview()
         let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
         mainTabBarController?.minimizePlayerDetailView()
+        panGestureRecognizer?.isEnabled = true
     }
     
     
@@ -215,9 +234,16 @@ class PlayerDetailView: BasicView {
     
     override func setupView() {        
         setupUI()
-        detectPlayerStarted()
-        observePlayerCurrentTime()
+        
+        playerDelegate = self
+        playerDelegate?.detectPlayerStarted()
+        playerDelegate?.observePlayerCurrentTime()
+    
+        
         setupMaximizedTapRecognizer()
+        
+        handlePanDelegate = self
+        setupPanRecognizer()
     }
 
     deinit {
@@ -249,9 +275,32 @@ extension PlayerDetailView{
     @objc func handleMaximizedTap(){
         let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
         mainTabBarController?.maximizePlayerDetailView(episode: nil)
+        panGestureRecognizer?.isEnabled = false
+    }
+    
+    fileprivate func setupPanRecognizer(){
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+        guard let panGestureRecognizer = panGestureRecognizer else {return}
+        addGestureRecognizer(panGestureRecognizer)
+        panGestureRecognizer.isEnabled = false
+    }
+    
+    @objc func handlePan(gesture: UIPanGestureRecognizer){
+        switch gesture.state {
+        case .began:
+            print("Beigin to pan")
+        case .changed:
+            handlePanDelegate?.whenPanChanged(gesture: gesture)
+        case .ended:
+            handlePanDelegate?.whenPanEnded(gesture: gesture)
+        default:
+            break
+        }
+        
     }
     
     
+//MARK: UI
     fileprivate func setupUI(){
         setupMaximizedPlayerView()
         setupMinimizedPlayerView()
@@ -302,46 +351,8 @@ extension PlayerDetailView{
         addSubview(minimizedPlayerDetailView)
         
         minimizedPlayerDetailView.anchor(top: topAnchor, bottom: nil
-            , left: leftAnchor, right: rightAnchor, topPadding: 0, bottomPadding: 0, leftPadding: 10, rightPadding: 0, width: 0, height: 48)
+            , left: leftAnchor, right: rightAnchor, topPadding: 0, bottomPadding: 0, leftPadding: 0, rightPadding: 0, width: 0, height: 48)
     }
-    
-    
-    //MARK: - player
-    fileprivate func playEpisode(episode: Episode){
-        guard let url = URL(string: episode.streamUrl)  else {return}
-        let playerItem = AVPlayerItem(url: url)
-        player.replaceCurrentItem(with: playerItem)
-        player.play()
-    }
-    
-    fileprivate func detectPlayerStarted(){
-        
-        let time = CMTime(value: 1, timescale: 3)// 1/3 second = 0.33 second
-        let times = [NSValue(time: time)]
-        //這邊會造成retain cycle，player和self互相reference
-        player.addBoundaryTimeObserver(forTimes: times, queue: .main) {[weak self] in
-            //Episode started to play
-            self?.enlargeEpisodeImgView()
-        }
-    }
-    
-    fileprivate func observePlayerCurrentTime(){
-        let interval = CMTime(value: 1, timescale: 2) // 1/2 second
-        player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] (time) in
-            self?.currentTimeLabel.text = time.toDisplayString()
-            let durationTime = self?.player.currentItem?.duration.toDisplayString()
-            self?.durationTimeLabel.text = durationTime
-            self?.updateCurrentTimeSlider()
-        }
-    }
-    
-    fileprivate func seekToCurrentTime(delta: Int64){
-        let fifteenSeconds = CMTimeMake(value: delta, timescale: 1)
-        let seekTime = CMTimeAdd(player.currentTime(), fifteenSeconds)
-        player.seek(to: seekTime)
-    }
-    
-    
     
     //MARK: - episodeImgView
     fileprivate func enlargeEpisodeImgView(){
@@ -350,8 +361,6 @@ extension PlayerDetailView{
             self?.episodeImgView.transform = .identity
         })
     }
-    
-    
     
     fileprivate func shrinkEpisodeImgView(){
         //讓圖像縮小，用於pause
@@ -373,6 +382,81 @@ extension PlayerDetailView{
 }
 
 
+
+
+
+//MARK: - player
+extension PlayerDetailView: PlayerProtocol{
+    
+    func playEpisode(episode: Episode){
+        guard let url = URL(string: episode.streamUrl)  else {return}
+        let playerItem = AVPlayerItem(url: url)
+        player.replaceCurrentItem(with: playerItem)
+        player.play()
+    }
+    
+    func detectPlayerStarted(){
+        
+        let time = CMTime(value: 1, timescale: 3)// 1/3 second = 0.33 second
+        let times = [NSValue(time: time)]
+        //這邊會造成retain cycle，player和self互相reference
+        player.addBoundaryTimeObserver(forTimes: times, queue: .main) {[weak self] in
+            //Episode started to play
+            self?.enlargeEpisodeImgView()
+        }
+    }
+    
+    func observePlayerCurrentTime(){
+        let interval = CMTime(value: 1, timescale: 2) // 1/2 second
+        player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] (time) in
+            self?.currentTimeLabel.text = time.toDisplayString()
+            let durationTime = self?.player.currentItem?.duration.toDisplayString()
+            self?.durationTimeLabel.text = durationTime
+            self?.updateCurrentTimeSlider()
+        }
+    }
+    
+    func seekToCurrentTime(delta: Int64){
+        let fifteenSeconds = CMTimeMake(value: delta, timescale: 1)
+        let seekTime = CMTimeAdd(player.currentTime(), fifteenSeconds)
+        player.seek(to: seekTime)
+    }
+}
+
+
 extension PlayerDetailView: MinimizedPlayerDetailViewDelegate{
     
+}
+
+//MARK: -PanProtocol
+extension PlayerDetailView: HandlePanProtocol{
+    func whenPanChanged(gesture: UIPanGestureRecognizer){
+        //to look for the coordinated system in self view's superView
+        let translation = gesture.translation(in: superview)
+        self.transform = CGAffineTransform(translationX: 0, y: translation.y)
+        minimizedPlayerDetailView.alpha = 1 + translation.y / 200
+        maximizedPlayerDetailView.alpha = -translation.y / 200
+    }
+    
+    func whenPanEnded(gesture: UIPanGestureRecognizer){
+        //make ur view's position stick on the tab bar
+        self.transform = .identity
+        let translation = gesture.translation(in: superview)
+        //detect the user speed of draging view
+        let velocity = gesture.velocity(in: superview)
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+            if translation.y < -200 || velocity.y < -500{
+                let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+                mainTabBarController?.maximizePlayerDetailView(episode: nil)
+                
+                //when player detail view is maximized, we disable pan gesture
+                //But we shoud enable the pan gesture when the player detail view is minimized
+                gesture.isEnabled = false
+                
+            }else{
+                self.minimizedPlayerDetailView.alpha = 1.0
+                self.maximizedPlayerDetailView.alpha = 0.0
+            }
+        })
+    }
 }

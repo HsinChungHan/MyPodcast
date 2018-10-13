@@ -90,10 +90,9 @@ extension MainTabBarController{
     }
     
     public func maximizePlayerDetailView(episode: Episode?){
-        
+        playerDetailViewMinimizedTopAnchor?.isActive = false
         playerDetailViewMaximizedTopAnchor?.isActive = true
         playerDetailViewMaximizedTopAnchor?.constant = 0
-        playerDetailViewMinimizedTopAnchor?.isActive = false
         if episode != nil{
             playerDetailView.setupValue(episode: episode!)
         }
