@@ -10,11 +10,15 @@ import UIKit
 import AVKit
 import SDWebImage
 import Foundation
-protocol HandlePanProtocol {
+protocol HandleAppearedPanProtocol {
     func whenPanChanged(gesture: UIPanGestureRecognizer)
     func whenPanEnded(gesture: UIPanGestureRecognizer)
 }
 
+protocol handleDismissalPanProtocol {
+    func whenDismissalPanChanged(gesture: UIPanGestureRecognizer)
+    func whenDismissalPanEnded(gesture: UIPanGestureRecognizer)
+}
 
 protocol  PlayerProtocol {
     func playEpisode(episode: Episode)
@@ -24,10 +28,13 @@ protocol  PlayerProtocol {
 }
 
 class PlayerDetailView: BasicView {
-    var handlePanDelegate: HandlePanProtocol?
+    var handlePanDelegate: HandleAppearedPanProtocol?
+    var handleDismissalPanDelegate: handleDismissalPanProtocol?
+
     var playerDelegate: PlayerProtocol?
     
-    var panGestureRecognizer: UIPanGestureRecognizer?
+    var appearedPanGestureRecognizer: UIPanGestureRecognizer?
+    var dismisaalPanGestureRecognizer: UIPanGestureRecognizer?
     
     fileprivate var episode: Episode?{
         didSet{
@@ -67,9 +74,8 @@ class PlayerDetailView: BasicView {
     
     @objc func handleDismiss(){
 //        removeFromSuperview()
-        let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+        let mainTabBarController = UIApplication.mainTabBarController()
         mainTabBarController?.minimizePlayerDetailView()
-        panGestureRecognizer?.isEnabled = true
     }
     
     
@@ -232,18 +238,18 @@ class PlayerDetailView: BasicView {
     }()
     
     
-    override func setupView() {        
+   
+    
+    override func setupView() {
         setupUI()
         
         playerDelegate = self
         playerDelegate?.detectPlayerStarted()
         playerDelegate?.observePlayerCurrentTime()
     
-        
-        setupMaximizedTapRecognizer()
-        
         handlePanDelegate = self
-        setupPanRecognizer()
+        handleDismissalPanDelegate = self
+        setGesture()
     }
 
     deinit {
@@ -267,25 +273,33 @@ extension PlayerDetailView{
         backgroundColor = color
     }
     
+    fileprivate func setGesture() {
+        setupMaximizedTapRecognizer()
+        setupPanRecognizer()
+    }
+    
+    
     fileprivate func setupMaximizedTapRecognizer(){
         let tapGestureRecogmizer = UITapGestureRecognizer(target: self, action: #selector(handleMaximizedTap))
         addGestureRecognizer(tapGestureRecogmizer)
     }
     
     @objc func handleMaximizedTap(){
-        let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+        let mainTabBarController = UIApplication.mainTabBarController()
         mainTabBarController?.maximizePlayerDetailView(episode: nil)
-        panGestureRecognizer?.isEnabled = false
     }
     
     fileprivate func setupPanRecognizer(){
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
-        guard let panGestureRecognizer = panGestureRecognizer else {return}
-        addGestureRecognizer(panGestureRecognizer)
-        panGestureRecognizer.isEnabled = false
+        appearedPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleAppearedPan))
+        guard let appearedPanGestureRecognizer = appearedPanGestureRecognizer else {return}
+        minimizedPlayerDetailView.addGestureRecognizer(appearedPanGestureRecognizer)
+        
+        dismisaalPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleDismissalPan))
+        guard let dismisaalPanGestureRecognizer = dismisaalPanGestureRecognizer else {return}
+        maximizedPlayerDetailView.addGestureRecognizer(dismisaalPanGestureRecognizer)
     }
     
-    @objc func handlePan(gesture: UIPanGestureRecognizer){
+    @objc func handleAppearedPan(gesture: UIPanGestureRecognizer){
         switch gesture.state {
         case .began:
             print("Beigin to pan")
@@ -296,9 +310,20 @@ extension PlayerDetailView{
         default:
             break
         }
-        
     }
     
+    @objc func handleDismissalPan(gesture: UIPanGestureRecognizer){
+        switch gesture.state {
+        case .began:
+            print("Beigin to pan")
+        case .changed:
+            handleDismissalPanDelegate?.whenDismissalPanChanged(gesture: gesture)
+        case .ended:
+            handleDismissalPanDelegate?.whenDismissalPanEnded(gesture: gesture)
+        default:
+            break
+        }
+    }
     
 //MARK: UI
     fileprivate func setupUI(){
@@ -429,13 +454,19 @@ extension PlayerDetailView: MinimizedPlayerDetailViewDelegate{
 }
 
 //MARK: -PanProtocol
-extension PlayerDetailView: HandlePanProtocol{
+extension PlayerDetailView: HandleAppearedPanProtocol{
     func whenPanChanged(gesture: UIPanGestureRecognizer){
         //to look for the coordinated system in self view's superView
         let translation = gesture.translation(in: superview)
         self.transform = CGAffineTransform(translationX: 0, y: translation.y)
-        minimizedPlayerDetailView.alpha = 1 + translation.y / 200
-        maximizedPlayerDetailView.alpha = -translation.y / 200
+        if translation.y < 0{
+            minimizedPlayerDetailView.alpha = 1 + translation.y / 200
+            maximizedPlayerDetailView.alpha = -translation.y / 200
+        }else{
+            minimizedPlayerDetailView.alpha = -translation.y / 200
+            maximizedPlayerDetailView.alpha = 1 + translation.y / 200
+        }
+        
     }
     
     func whenPanEnded(gesture: UIPanGestureRecognizer){
@@ -446,17 +477,44 @@ extension PlayerDetailView: HandlePanProtocol{
         let velocity = gesture.velocity(in: superview)
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
             if translation.y < -200 || velocity.y < -500{
-                let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController
+                let mainTabBarController = UIApplication.mainTabBarController()
                 mainTabBarController?.maximizePlayerDetailView(episode: nil)
-                
-                //when player detail view is maximized, we disable pan gesture
-                //But we shoud enable the pan gesture when the player detail view is minimized
-                gesture.isEnabled = false
-                
             }else{
                 self.minimizedPlayerDetailView.alpha = 1.0
                 self.maximizedPlayerDetailView.alpha = 0.0
             }
         })
     }
+}
+
+
+extension PlayerDetailView: handleDismissalPanProtocol{
+    func whenDismissalPanChanged(gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: superview)
+        self.transform = CGAffineTransform(translationX: 0, y: translation.y)
+        print(translation.y)
+        if translation.y > 0{
+            minimizedPlayerDetailView.alpha = 1 - translation.y / 200
+            maximizedPlayerDetailView.alpha = translation.y / 200
+        }else{
+            minimizedPlayerDetailView.alpha = translation.y / 200
+            maximizedPlayerDetailView.alpha = 1 - translation.y / 200
+        }
+    }
+    
+    func whenDismissalPanEnded(gesture: UIPanGestureRecognizer) {
+        //make ur view's position stick on the tab bar
+        self.transform = .identity
+        let translation = gesture.translation(in: superview)
+        //detect the user speed of draging view
+        let velocity = gesture.velocity(in: superview)
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+            if translation.y > 50 || velocity.y > 500{
+                let mainTabBarController = UIApplication.mainTabBarController()
+                mainTabBarController?.minimizePlayerDetailView()
+            }
+        })
+    }
+    
+    
 }

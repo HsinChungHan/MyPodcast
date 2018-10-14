@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C02C665A216497FF00312BF2 /* MinimizedPlayerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02C6659216497FF00312BF2 /* MinimizedPlayerDetailView.swift */; };
+		C0552591217311A20074D6D0 /* UIApplication_Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0552590217311A20074D6D0 /* UIApplication_Extension.swift */; };
 		C074D97021336DE90038196F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C074D96F21336DE90038196F /* AppDelegate.swift */; };
 		C074D97721336DEC0038196F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C074D97621336DEC0038196F /* Assets.xcassets */; };
 		C074D97A21336DEC0038196F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C074D97821336DEC0038196F /* LaunchScreen.storyboard */; };
@@ -42,6 +43,7 @@
 		023799290BDFFCA1A5B9A878 /* Pods-MyPodcast.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyPodcast.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyPodcast/Pods-MyPodcast.release.xcconfig"; sourceTree = "<group>"; };
 		48198778E9161F107ADCC0E8 /* Pods_MyPodcast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyPodcast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C02C6659216497FF00312BF2 /* MinimizedPlayerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimizedPlayerDetailView.swift; sourceTree = "<group>"; };
+		C0552590217311A20074D6D0 /* UIApplication_Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplication_Extension.swift; sourceTree = "<group>"; };
 		C074D96C21336DE90038196F /* MyPodcast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyPodcast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C074D96F21336DE90038196F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C074D97621336DEC0038196F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				C074D98121336E350038196F /* BasicCollectionViewCell.swift */,
+				C0552590217311A20074D6D0 /* UIApplication_Extension.swift */,
 				C0C44800213741AE0035C975 /* Extension_UIStackView.swift */,
 				C0FEE8702136638A006F167E /* Extension_String.swift */,
 				C0C447FE213740120035C975 /* BasicView.swift */,
@@ -347,6 +350,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C074D98A2133711A0038196F /* ViewController.swift in Sources */,
+				C0552591217311A20074D6D0 /* UIApplication_Extension.swift in Sources */,
 				C074D98F213374640038196F /* Podcast.swift in Sources */,
 				C074D97021336DE90038196F /* AppDelegate.swift in Sources */,
 				C0C44801213741AE0035C975 /* Extension_UIStackView.swift in Sources */,
